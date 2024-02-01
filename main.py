@@ -1,4 +1,6 @@
 from displayInfo import display
-print("cibai")
+from time import sleep_ms
+
 oledscreen = display()
-oledscreen.showInfo()
+sleep_ms(1000)
+oledscreen.connectedMssg()

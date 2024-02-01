@@ -14,20 +14,9 @@ _RX_POLL_DELAY = const(15)
 # initiator may be a slow device. Value tested with Pyboard, ESP32 and ESP8266.
 _RESPONDER_SEND_DELAY = const(10)
 
-if usys.platform == "pyboard":
-    spi = SPI(2)  # miso : Y7, mosi : Y8, sck : Y6
-    cfg = {"spi": spi, "csn": "Y5", "ce": "Y4"}
-elif usys.platform == "esp8266":  # Hardware SPI
-    spi = SPI(1)  # miso : 12, mosi : 13, sck : 14
-    cfg = {"spi": spi, "csn": 4, "ce": 5}
-elif usys.platform == "esp32":  # Software SPI
-    spi = SoftSPI(sck=Pin(25), mosi=Pin(33), miso=Pin(32))
-    cfg = {"spi": spi, "csn": 26, "ce": 27}
-elif usys.platform == "rp2":  # Hardware SPI with explicit pin definitions
-    spi = SPI(0, sck=Pin(6), mosi=Pin(7), miso=Pin(4))
-    cfg = {"spi": spi, "miso": 4, "mosi": 7, "sck": 6, "csn": 14, "ce": 17}
-else:
-    raise ValueError("Unsupported platform {}".format(usys.platform))
+# Set the pins for the RF module
+spi = SPI(0, sck=Pin(6), mosi=Pin(7), miso=Pin(4))
+cfg = {"spi": spi, "miso": 4, "mosi": 7, "sck": 6, "csn": 14, "ce": 17}
 
 # Addresses are in little-endian format. They correspond to big-endian
 # 0xf0f0f0f0e1, 0xf0f0f0f0d2

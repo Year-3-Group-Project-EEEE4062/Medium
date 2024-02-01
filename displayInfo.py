@@ -1,8 +1,6 @@
 from machine import Pin, SoftI2C
 from lib.OLED import ssd1306
 
-
-
 #defining a class for OLED display
 class display:
     #constructor
@@ -17,11 +15,35 @@ class display:
         #create an instance
         self.oled = ssd1306.SSD1306_I2C(self.oled_width, self.oled_height, self.i2c)
 
-    def showInfo(self):
-        self.oled.fill(0) # clear the screen
-        self.oled.text('Hello, World 1!', 0, 0)
-        self.oled.text('Hello, World 3!', 0, 10)
+        #print initialized message
+        self.oled.fill(0)
+        self.oled.text("Medium Started!", 0, 10)
+        self.oled.text("Ready...", 0, 30)
+        self.oled.text("Connect Arfanify!", 0, 50)
         self.oled.show()
+
+    def disconnectedMssg(self):
+        self.oled.fill(0)
+        self.oled.text("Disconnected...", 0, 10)
+        self.oled.text("Reconnect to", 0, 30)
+        self.oled.text("Arfanify", 0, 40)
+        self.oled.show()
+
+    def connectedMssg(self):
+        self.oled.fill(0)
+        self.oled.text("Connected...", 0, 10)
+        self.oled.text("Stay safe!!", 0, 30)
+        self.oled.show()
+
+    def actionMssg(self, bleMssg):
+        self.oled.fill(0)
+        self.oled.text(bleMssg, 0, 10)
+        self.oled.show()
+        
+
+
+
+
 
 
 
