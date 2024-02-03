@@ -2,7 +2,7 @@ from machine import Pin, SoftI2C
 from lib.OLED import ssd1306
 
 #defining a class for OLED display
-class display:
+class oledDisplay:
     #constructor
     def __init__(self):
         #Combination of I2C pins used for OLED
@@ -17,9 +17,9 @@ class display:
 
         #print initialized message
         self.oled.fill(0)
-        self.oled.text("Medium Started!", 0, 10)
+        self.oled.text("Medium Started", 0, 10)
         self.oled.text("Ready...", 0, 30)
-        self.oled.text("Connect Arfanify!", 0, 50)
+        self.oled.text("Use Arfanify!", 0, 50)
         self.oled.show()
 
     def disconnectedMssg(self):
