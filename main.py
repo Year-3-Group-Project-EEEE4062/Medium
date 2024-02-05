@@ -38,7 +38,7 @@ bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 led = Pin("LED", machine.Pin.OUT)
 led.off()
 
-rfFeature.initiator()
+#rfFeature.initiator()
 
 while True:
     # check if BLE connected or not
