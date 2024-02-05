@@ -4,7 +4,7 @@ import usys
 import ustruct as struct
 import utime
 from machine import Pin, SPI, SoftSPI
-from nrf24l01 import NRF24L01
+from lib.rf.nrf24l01 import NRF24L01
 from micropython import const
 
 # Responder pause between receiving data and checking for further packets.
@@ -16,7 +16,7 @@ _RESPONDER_SEND_DELAY = const(10)
 
 # Set the pins for the RF module
 spi = SPI(0, sck=Pin(6), mosi=Pin(7), miso=Pin(4))
-cfg = {"spi": spi, "miso": 4, "mosi": 7, "sck": 6, "csn": 14, "ce": 17}
+cfg = {"spi": spi, "miso": 4, "mosi": 7, "sck": 6, "csn": 5, "ce": 8}
 
 # Addresses are in little-endian format. They correspond to big-endian
 # 0xf0f0f0f0e1, 0xf0f0f0f0d2

@@ -22,17 +22,19 @@ _FLAG_WRITE_NO_RESPONSE = const(0x0004)
 _FLAG_WRITE = const(0x0008)
 _FLAG_NOTIFY = const(0x0010)
 
-UUID = "8d4bfdb1-f5ee-4f87-a0a8-50d82ad6db76"
+# Have a UUID different for the service and its characteristics
+serviceUUID = '26d111bb-4a8a-4dd8-af52-aa01479c4560'
+txUUID = 'b4d8f565-5540-4a8a-9cbc-3319da04ea61'
+rxUUID = 'd0ac9ff2-4b3c-461e-bcde-6652b8190a0a'
 
-_UART_UUID = bluetooth.UUID(UUID)
-
+_UART_UUID = bluetooth.UUID(serviceUUID)
 _UART_TX = (
-    bluetooth.UUID(UUID),
-    _FLAG_READ | _FLAG_NOTIFY,
+    bluetooth.UUID(txUUID),
+    _FLAG_READ | _FLAG_NOTIFY | _FLAG_WRITE ,
 )
 _UART_RX = (
-    bluetooth.UUID(UUID),
-    _FLAG_WRITE | _FLAG_WRITE_NO_RESPONSE,
+    bluetooth.UUID(rxUUID),
+    _FLAG_WRITE_NO_RESPONSE | _FLAG_WRITE,
 )
 _UART_SERVICE = (
     _UART_UUID,

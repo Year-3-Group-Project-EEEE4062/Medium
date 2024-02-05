@@ -37,7 +37,8 @@ class oledDisplay:
 
     def actionMssg(self, bleMssg):
         self.oled.fill(0)
-        self.oled.text(bleMssg, 0, 10)
+        self.oled.text("Action: ", 0, 10)
+        self.oled.text(bleMssg, 60, 10)
         self.oled.show()
         
 
