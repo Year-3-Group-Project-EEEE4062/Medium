@@ -35,7 +35,7 @@ oledscreen = oledDisplay()
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 
 # Setup on board LED to let user know also if BLE connected or not 
-led = Pin("LED", machine.Pin.OUT)
+led = Pin("LED", Pin.OUT)
 led.off()
 
 #rfFeature.initiator()
