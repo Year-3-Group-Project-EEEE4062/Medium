@@ -8,8 +8,11 @@ from machine import Pin, SPI, SoftSPI
 from lib.rf.nrf24l01 import NRF24L01
 from micropython import const
 
+# Run nrf24l01test.responder() on responder, then nrf24l01test.initiator() on initiator
+
 # Responder pause between receiving data and checking for further packets.
 _RX_POLL_DELAY = const(15)
+
 # Responder pauses an additional _RESPONER_SEND_DELAY ms after receiving data and before
 # transmitting to allow the (remote) initiator time to get into receive mode. The
 # initiator may be a slow device. Value tested with Pyboard, ESP32 and ESP8266.
@@ -90,7 +93,9 @@ def responder():
     print("NRF24L01 responder mode, waiting for packets... (ctrl-C to stop)")
 
     while True:
+        # Check if any data is received
         if nrf.any():
+            # While data has been received
             while nrf.any():
                 buf = nrf.recv()
                 mssg = buf.decode('utf-8')
@@ -112,10 +117,3 @@ def responder():
             
             print("sent response")
             nrf.start_listening()
-
-print("NRF24L01 test module loaded")
-print("NRF24L01 pinout for test:")
-print("    CE on", cfg["ce"])
-print("    CSN on", cfg["csn"])
-print("    SPI on", cfg["spi"])
-print("run nrf24l01test.responder() on responder, then nrf24l01test.initiator() on initiator")

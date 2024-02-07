@@ -4,7 +4,7 @@ import uctypes
 
 from displayInfo import oledDisplay
 from bleFeature import mediumBLE
-import rfFeature
+import rfTransmitter
 
 def receivedBLE(data):
     # Expected data to be received is utf-8
@@ -38,7 +38,7 @@ bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 led = Pin("LED", Pin.OUT)
 led.off()
 
-rfFeature.initiator()
+rfTransmitter.initiator()
 
 # while True:
 #     # check if BLE connected or not
