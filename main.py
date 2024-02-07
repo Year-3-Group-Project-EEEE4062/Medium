@@ -15,6 +15,8 @@ def receivedBLE(data):
 
     oledscreen.actionMssg(decoded_data)
 
+    rfTransmitter.initiator(decoded_data)
+
 def connectedBLE():
     print("Connected")
     oledscreen.connectedMssg()
@@ -38,9 +40,7 @@ bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 led = Pin("LED", Pin.OUT)
 led.off()
 
-rfTransmitter.initiator()
-
-# while True:
-#     # check if BLE connected or not
-#     if bluetoothLowEnergy.is_connected():
-#         continue
+while True:
+    # check if BLE connected or not
+    if bluetoothLowEnergy.is_connected():
+        continue
