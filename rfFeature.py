@@ -44,7 +44,7 @@ def initiator():
     while num_successes < num_needed and num_failures < num_needed:
         # stop listening and send packet
         nrf.stop_listening()
-        mssg = "fuck"
+        mssg = "cibai"
         print("sending:", mssg)
         try:
             nrf.send(mssg.encode('utf-8'))
@@ -67,16 +67,9 @@ def initiator():
 
         else:
             # recv packet
-            (got_millis,) = struct.unpack("i", nrf.recv())
+            pingedMssg = nrf.recv().decode('utf-8')
 
             # print response and round-trip delay
-            print(
-                "got response:",
-                got_millis,
-                "(delay",
-                utime.ticks_diff(utime.ticks_ms(), got_millis),
-                "ms)",
-            )
             num_successes += 1
 
         # delay then loop
@@ -106,12 +99,17 @@ def responder():
 
             # Give initiator time to get into receive mode.
             utime.sleep_ms(_RESPONDER_SEND_DELAY)
+
+            # Stop boat RF from listening
             nrf.stop_listening()
+
+            # Try replying to the message to the initiator
             try:
                 pingMssg = "Got it!"
                 nrf.send(pingMssg.encode('utf-8'))
             except OSError:
                 pass
+            
             print("sent response")
             nrf.start_listening()
 
