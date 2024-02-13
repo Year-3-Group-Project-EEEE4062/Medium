@@ -18,21 +18,32 @@ _RX_POLL_DELAY = const(15)
 # initiator may be a slow device. Value tested with Pyboard, ESP32 and ESP8266.
 _RESPONDER_SEND_DELAY = const(10)
 
-# Set the pins for the RF module
-spi = SPI(0, sck=Pin(6), mosi=Pin(7), miso=Pin(4))
-cfg = {"spi": spi, "miso": 4, "mosi": 7, "sck": 6, "csn": 5, "ce": 8}
+# # Set the pins for the RF module
+# spi = SPI(0, sck=Pin(6), mosi=Pin(7), miso=Pin(4))
+# cfg = {"spi": spi, "miso": 4, "mosi": 7, "sck": 6, "csn": 5, "ce": 8}
 
-# Addresses are in little-endian format. They correspond to big-endian
-# 0xf0f0f0f0e1, 0xf0f0f0f0d2
-pipes = (b"\xe1\xf0\xf0\xf0\xf0", b"\xd2\xf0\xf0\xf0\xf0")
+# # Addresses are in little-endian format. They correspond to big-endian
+# # 0xf0f0f0f0e1, 0xf0f0f0f0d2
+# pipes = (b"\xe1\xf0\xf0\xf0\xf0", b"\xd2\xf0\xf0\xf0\xf0")
+
+class RF_TX:
+    def __init__(self):
+        # Set the pins for the RF module
+        self.spi = SPI(0, sck=Pin(6), mosi=Pin(7), miso=Pin(4))
+        self.cfg = {"spi": self.spi, "miso": 4, "mosi": 7, "sck": 6, "csn": 5, "ce": 8}
+
+        # Addresses are in little-endian format. They correspond to big-endian
+        # 0xf0f0f0f0e1, 0xf0f0f0f0d2
+        self.pipes = (b"\xe1\xf0\xf0\xf0\xf0", b"\xd2\xf0\xf0\xf0\xf0")
+
+
+        self.csn = Pin(self.cfg["csn"], mode=Pin.OUT, value=1)
+        self.ce = Pin(self.cfg["ce"], mode=Pin.OUT, value=0)
+        self.spi = self.cfg["spi"]
+        self.nrf = NRF24L01(self.spi, self.csn, self.ce, payload_size=8)
 
 
 def initiator(rfMssg):
-    csn = Pin(cfg["csn"], mode=Pin.OUT, value=1)
-    ce = Pin(cfg["ce"], mode=Pin.OUT, value=0)
-    spi = cfg["spi"]
-    nrf = NRF24L01(spi, csn, ce, payload_size=8)
-
     nrf.open_tx_pipe(pipes[0])
     nrf.open_rx_pipe(1, pipes[1])
     nrf.start_listening()
