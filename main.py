@@ -4,7 +4,7 @@ import uctypes
 
 from displayInfo import oledDisplay
 from bleFeature import mediumBLE
-import rfTransmitter
+from rfTransmitter import RF_TX 
 
 def receivedBLE(data):
     # Expected data to be received is utf-8
@@ -15,7 +15,7 @@ def receivedBLE(data):
 
     oledscreen.actionMssg(decoded_data)
 
-    rfTransmitter.initiator(decoded_data)
+    nrfModule.sender(decoded_data)
 
 def connectedBLE():
     print("Connected")
@@ -33,8 +33,12 @@ def disconnectedBLE():
     # This to indicate to user that BLE NOT connected
     led.off()
 
+# Create instances
 oledscreen = oledDisplay()
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
+nrfModule = RF_TX()
+
+nrfModule.sender("Hallo")
 
 # Setup on board LED to let user know also if BLE connected or not 
 led = Pin("LED", Pin.OUT)
