@@ -20,6 +20,8 @@ _RESPONDER_SEND_DELAY = const(10)
 
 class RF_TX:
     def __init__(self):
+
+        self.timeoutTime = 500
         # Set the pins for the RF module
         self.spi = SPI(0, sck=Pin(6), mosi=Pin(7), miso=Pin(4))
         self.cfg = {"spi": self.spi, "miso": 4, "mosi": 7, "sck": 6, "csn": 5, "ce": 8}
@@ -38,7 +40,7 @@ class RF_TX:
 
     def sender(self, rfMssg):
         # Variable to keep track of how many trials
-        num_needed = 3
+        num_needed = 1
         num_failures = 0
 
         print("NRF24L01 initiator mode, %d attempts" % num_needed)
@@ -49,12 +51,11 @@ class RF_TX:
             self.nrf.stop_listening()
 
             # Assign the message to a local variable
-            mssg = rfMssg
-            print("sending:", mssg)
+            print("sending..")
             
             # Send the message through RF
             try:
-                self.nrf.send(mssg.encode('utf-8'))
+                self.nrf.send(rfMssg)
             except OSError:
                 # Commonly hardware error
                 pass
@@ -68,13 +69,14 @@ class RF_TX:
 
             # Track the time to wait for a response for 250ms
             while not self.nrf.any() and not timeout:
-                if utime.ticks_diff(utime.ticks_ms(), start_time) > 250:
+                if utime.ticks_diff(utime.ticks_ms(), start_time) > self.timeoutTime:
                     timeout = True
 
             # Check if got a response from the responder or not
             # Did not get a response
             if timeout:
                 print("failed, response timed out")
+                
                 num_failures += 1
 
             # Obtained a response
@@ -82,13 +84,16 @@ class RF_TX:
                 # recv packet
                 pingedMssg = self.nrf.recv().decode('utf-8')
 
-                print("Pinged Message: ", pingedMssg)
+                print("Pinged Message: ", pingedMssg)                
+
+                # Return "Yes" to indicate boat is within reach
+                return "Yes"
 
                 # Break the loop for transmitting since responder got the message
                 break
 
             # delay then loop
             utime.sleep_ms(250)
-
-        # Debugging purposes
-        print("initiator finished sending; attempts = %d" % (num_failures))
+        
+        # Return "No" to indicate cannot be connected to boat
+        return "No"

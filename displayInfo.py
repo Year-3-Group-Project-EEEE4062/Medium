@@ -35,10 +35,12 @@ class oledDisplay:
         self.oled.text("Stay safe!!", 0, 30)
         self.oled.show()
 
-    def actionMssg(self, bleMssg):
+    def actionMssg(self, boatStatus, bleMssg):
         self.oled.fill(0)
-        self.oled.text("Action: ", 0, 10)
-        self.oled.text(bleMssg, 60, 10)
+        self.oled.text("Boat Reach: ", 0, 10)
+        self.oled.text(boatStatus, 90, 10)
+        self.oled.text("Action: ", 0, 20)
+        self.oled.text(bleMssg, 60, 20)
         self.oled.show()
         
 

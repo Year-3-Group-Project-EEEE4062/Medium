@@ -1,6 +1,7 @@
 from machine import Pin, Timer
-import time
+import utime
 import uctypes
+import struct
 
 from displayInfo import oledDisplay
 from bleFeature import mediumBLE
@@ -13,9 +14,17 @@ def receivedBLE(data):
     # Decode the uint8 data received
     decoded_data = data.decode('utf-8')
 
-    oledscreen.actionMssg(decoded_data)
+    saya = 0.12345678
 
-    nrfModule.sender(decoded_data)
+    try:
+        sendMsg = saya.encode('utf-8')
+    except:
+        sendMsg = struct.pack("f", saya)
+
+    # directly give the coded data to the RF
+    boatStatus = nrfModule.sender(sendMsg)
+
+    oledscreen.actionMssg(boatStatus,decoded_data)
 
 def connectedBLE():
     print("Connected")
@@ -37,8 +46,6 @@ def disconnectedBLE():
 oledscreen = oledDisplay()
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 nrfModule = RF_TX()
-
-nrfModule.sender("Hallo")
 
 # Setup on board LED to let user know also if BLE connected or not 
 led = Pin("LED", Pin.OUT)
