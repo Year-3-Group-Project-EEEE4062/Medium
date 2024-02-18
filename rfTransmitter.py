@@ -55,6 +55,7 @@ class RF_TX:
             
             # Send the message through RF
             try:
+                # Send the mesage directly without needing to encode
                 self.nrf.send(rfMssg)
             except OSError:
                 # Commonly hardware error
