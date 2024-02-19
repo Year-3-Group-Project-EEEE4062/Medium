@@ -7,6 +7,7 @@ from displayInfo import oledDisplay
 from bleFeature import mediumBLE
 from rfTransmitter import RF_TX
 from mediumDataStorage import mediumStorage
+from processMessages import processMssg
 
 ##################################################################
 ## Callback when data received through BLE
@@ -14,13 +15,12 @@ def receivedBLE(data):
     # Expected data to be received is utf-8
     print("Received: ", data)
 
-    decoded = list(data)
-
-    print("Decoded: ",decoded)
+    mode = processor.process(data)
 
     # directly give the coded data to the RF
     # boatStatus = nrfModule.sender(sendMsg)
 
+    oledscreen.actionMssg("No",mode)
     # oledscreen.actionMssg(boatStatus,decoded_data)
 
 ##################################################################
@@ -32,6 +32,7 @@ def connectedBLE():
     # Turn ON onboard LED
     # This to indicate to user that BLE is connected
     led.on()
+    utime.sleep_ms(50)
 
 ##################################################################
 ## Callback when BLE disconnected from to phone
@@ -51,6 +52,7 @@ def disconnectedBLE():
 oledscreen = oledDisplay()
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 nrfModule = RF_TX()
+processor = processMssg()
 # sdCard = mediumStorage()
 
 # Setup on board LED to let user know also if BLE connected or not 

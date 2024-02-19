@@ -1,5 +1,6 @@
 from machine import Pin, SoftI2C
 from lib.OLED import ssd1306
+import utime
 
 #defining a class for OLED display
 class oledDisplay:
@@ -35,12 +36,38 @@ class oledDisplay:
         self.oled.text("Stay safe!!", 0, 30)
         self.oled.show()
 
-    def actionMssg(self, boatStatus, bleMssg):
+    def actionMssg(self, boatStatus, mode):
         self.oled.fill(0)
-        self.oled.text("Boat Reach: ", 0, 10)
-        self.oled.text(boatStatus, 90, 10)
-        self.oled.text("Action: ", 0, 20)
-        self.oled.text(bleMssg, 60, 20)
+
+        self.oled.text("Boat Ping: ", 0, 10)
+        self.oled.text(boatStatus, 85, 10)
+
+        self.oled.text("Boat Busy: ", 0, 25)
+        self.oled.text(boatStatus, 85, 25)
+
+        self.oled.text("Mode     : ", 0, 40)
+        self.oled.text(mode, 85, 40)
+
+        # Get the current time (local time)
+        current_time = utime.localtime()
+        # Extract the hour and minute
+        hour, minute = current_time[3], current_time[4]
+
+        if (hour<10):
+            stringHours = "0"+str(hour)
+        else:
+            stringHours = str(hour)
+
+        if (minute<10):
+            stringMinutes = "0"+str(minute)
+        else:
+            stringMinutes = str(minute)
+        
+        stringTime = stringHours+":"+stringMinutes
+
+        self.oled.text("Last Time: ", 0, 55)
+        self.oled.text(stringTime, 85, 55)
+
         self.oled.show()
         
 

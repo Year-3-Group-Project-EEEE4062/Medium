@@ -20,8 +20,8 @@ _RESPONDER_SEND_DELAY = const(10)
 
 class RF_TX:
     def __init__(self):
-
-        self.timeoutTime = 500
+        self.timeoutTime = 250
+        
         # Set the pins for the RF module
         self.spi = SPI(0, sck=Pin(6), mosi=Pin(7), miso=Pin(4))
         self.cfg = {"spi": self.spi, "miso": 4, "mosi": 7, "sck": 6, "csn": 5, "ce": 8}
