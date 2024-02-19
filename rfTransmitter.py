@@ -33,7 +33,7 @@ class RF_TX:
         self.csn = Pin(self.cfg["csn"], mode=Pin.OUT, value=1)
         self.ce = Pin(self.cfg["ce"], mode=Pin.OUT, value=0)
         self.spi = self.cfg["spi"]
-        self.nrf = NRF24L01(self.spi, self.csn, self.ce, payload_size=8)
+        self.nrf = NRF24L01(self.spi, self.csn, self.ce, payload_size=32)
 
         self.nrf.open_tx_pipe(self.pipes[0])
         self.nrf.open_rx_pipe(1, self.pipes[1])

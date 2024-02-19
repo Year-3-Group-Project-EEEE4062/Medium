@@ -14,13 +14,14 @@ def receivedBLE(data):
     # Expected data to be received is utf-8
     print("Received: ", data)
 
-    # Decode the uint8 data received
-    decoded_data = data.decode('utf-8')
+    decoded = list(data)
+
+    print("Decoded: ",decoded)
 
     # directly give the coded data to the RF
-    boatStatus = nrfModule.sender(sendMsg)
+    # boatStatus = nrfModule.sender(sendMsg)
 
-    oledscreen.actionMssg(boatStatus,decoded_data)
+    # oledscreen.actionMssg(boatStatus,decoded_data)
 
 ##################################################################
 ## Callback when BLE connected to phone
@@ -50,16 +51,14 @@ def disconnectedBLE():
 oledscreen = oledDisplay()
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 nrfModule = RF_TX()
-sdCard = mediumStorage()
+# sdCard = mediumStorage()
 
 # Setup on board LED to let user know also if BLE connected or not 
 led = Pin("LED", Pin.OUT)
 led.off()
 
-sdCard.writetoSD("data", data=[18,2,2024])
-
-# # Infinite loop
-# while True:
-#     # check if BLE connected or not
-#     if bluetoothLowEnergy.is_connected():
-#         continue
+# Infinite loop
+while True:
+    # check if BLE connected or not
+    if bluetoothLowEnergy.is_connected():
+        continue
