@@ -99,8 +99,30 @@ class mediumRF:
         # Return "No" to indicate cannot be connected to boat
         return "No"
 
-    def test(self):
-        dataToBeSent = [1,2,3,4,5,6,7,8]
-        
+    def nrfSenderTest(self):
         while True:
-            self.sender(dataToBeSent)
+            self.__doubleTest()
+            self.__integerTest()
+
+    def __doubleTest(self):
+        # Can only send a maximum of 4 doubles per transmission
+        dataToBeSent = [2.9438889,101.8735556]
+        double_identifier = 0x01
+
+        data = bytearray()
+        data.extend(double_identifier.to_bytes(1, byteorder='big'))
+        data.extend(struct.pack('d' * len(dataToBeSent), *dataToBeSent))
+    
+        self.sender(data)
+
+    def __integerTest(self):
+        # Can only send a maximum of 4 doubles per transmission
+        dataToBeSent = [1,2,3,4,5,6,7,8]
+        integer_identifier = 0x02
+
+        data = bytearray()
+        data.extend(integer_identifier.to_bytes(1, byteorder='big'))
+        data.extend(struct.pack('i' * len(dataToBeSent), *dataToBeSent))
+
+        self.sender(data)
+

@@ -59,8 +59,10 @@ processor = processMssg()
 led = Pin("LED", Pin.OUT)
 led.off()
 
-# Infinite loop
-while True:
-    # check if BLE connected or not
-    if bluetoothLowEnergy.is_connected():
-        continue
+nrfModule.nrfSenderTest()
+
+# # Infinite loop
+# while True:
+#     # check if BLE connected or not
+#     if bluetoothLowEnergy.is_connected():
+#         pass
