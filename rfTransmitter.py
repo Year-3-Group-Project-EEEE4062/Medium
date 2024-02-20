@@ -18,7 +18,7 @@ _RX_POLL_DELAY = const(15)
 # initiator may be a slow device. Value tested with Pyboard, ESP32 and ESP8266.
 _RESPONDER_SEND_DELAY = const(10)
 
-class RF_TX:
+class mediumRF:
     def __init__(self):
         self.timeoutTime = 250
         
@@ -98,3 +98,9 @@ class RF_TX:
         
         # Return "No" to indicate cannot be connected to boat
         return "No"
+
+    def test(self):
+        dataToBeSent = [1,2,3,4,5,6,7,8]
+        
+        while True:
+            self.sender(dataToBeSent)

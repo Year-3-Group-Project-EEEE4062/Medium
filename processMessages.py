@@ -97,3 +97,25 @@ class processMssg:
         rtc.datetime((year, month, day, weekday, hours, minutes, seconds, subseconds))
 
 
+    import struct
+
+# def extract_doubles_from_string(input_string):
+#     try:
+#         # Split the input string using the comma as a delimiter
+#         double_str1, double_str2 = input_string.split(',')
+
+#         # Unpack the double values from the string
+#         double1, = struct.unpack('d', double_str1.encode())
+#         double2, = struct.unpack('d', double_str2.encode())
+
+#         return double1, double2
+#     except ValueError:
+#         print("Invalid input format. Please provide two comma-separated double values.")
+
+# # Example usage
+# input_str = "104.253562435452,150.2145124"
+# double1, double2 = extract_doubles_from_string(input_str)
+# print(f"Extracted doubles: {double1}, {double2}")
+
+
+

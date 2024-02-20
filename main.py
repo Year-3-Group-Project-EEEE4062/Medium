@@ -5,7 +5,7 @@ import struct
 
 from displayInfo import oledDisplay
 from bleFeature import mediumBLE
-from rfTransmitter import RF_TX
+from rfTransmitter import mediumRF
 from mediumDataStorage import mediumStorage
 from processMessages import processMssg
 
@@ -51,7 +51,7 @@ def disconnectedBLE():
 # Create instances
 oledscreen = oledDisplay()
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
-nrfModule = RF_TX()
+nrfModule = mediumRF()
 processor = processMssg()
 # sdCard = mediumStorage()
 
