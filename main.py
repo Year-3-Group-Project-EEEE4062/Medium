@@ -19,11 +19,7 @@ def receivedBLE(data):
 
     mode = processor.process(data)
 
-    # directly give the coded data to the RF
-    # boatStatus = nrfModule.sender(sendMsg)
-
     oledscreen.actionMssg("No",mode)
-    # oledscreen.actionMssg(boatStatus,decoded_data)
 
 ##################################################################
 ## Callback when BLE connected to phone
@@ -58,7 +54,7 @@ bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 processor = processMssg()
 
 # nrfModule = mediumRF()
-loraModule = mediumLoRa()
+# loraModule = mediumLoRa()
 
 # Setup on board LED to let user know also if BLE connected or not 
 led = Pin("LED", Pin.OUT)
@@ -67,10 +63,10 @@ led.off()
 ##################################################################
 ## main operation
 
-# # Infinite loop
-# while True:
-#     # check if BLE connected or not
-#     if bluetoothLowEnergy.is_connected():
-#         pass
+# Infinite loop
+while True:
+    # check if BLE connected or not
+    if bluetoothLowEnergy.is_connected():
+        pass
 
-loraModule.loraSenderTest()
+# loraModule.loraSenderTest()
