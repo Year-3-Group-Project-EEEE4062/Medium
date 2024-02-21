@@ -242,18 +242,25 @@ class LoRa(object):
         self.set_mode_idle()
         self.wait_cad()
 
-        header = [header_to, self._this_address, header_id, header_flags]
         if type(data) == int:
             data = [data]
+            bytearrayOrNot = 0
         elif type(data) == bytes:
             data = [p for p in data]
+            bytearrayOrNot = 0
         elif type(data) == str:
             data = [ord(s) for s in data]
+            bytearrayOrNot = 0
+        elif type(data) == bytearray:
+            data = list(data)
+            bytearrayOrNot = 1
 
         if self.crypto:
             data = [b for b in self._encrypt(bytes(data))]
 
+        header = [header_to, self._this_address, header_id, header_flags, bytearrayOrNot]
         payload = header + data
+
         self._spi_write(REG_0D_FIFO_ADDR_PTR, 0)
         self._spi_write(REG_00_FIFO, payload)
         self._spi_write(REG_22_PAYLOAD_LENGTH, len(payload))
@@ -261,7 +268,7 @@ class LoRa(object):
         self.set_mode_tx()
         return True
 
-    def send_to_wait(self, data, header_to, header_flags=0, retries=3):
+    def send_to_wait(self, data, header_to, header_flags=0, retries=1):
         self._last_header_id += 1
 
         for _ in range(retries + 1):
@@ -270,7 +277,7 @@ class LoRa(object):
 
             if header_to == BROADCAST_ADDRESS:  # Don't wait for acks from a broadcast message
                 return True
-                
+
             start = time.time()
             while time.time() - start < self.retry_timeout + (self.retry_timeout * (getrandbits(16) / (2**16 - 1))):
                 if self._last_payload:
@@ -279,11 +286,14 @@ class LoRa(object):
                             self._last_payload.header_id == self._last_header_id:
 
                         # We got an ACK
+                        print("Receiver Got!!")
                         return True
+        
+        print("Receiver Status Unknown!!")
         return False
 
     def send_ack(self, header_to, header_id):
-        self.send(b'!', header_to, header_id, FLAGS_ACK)
+        self.send(b'?', header_to, header_id, FLAGS_ACK)
         self.wait_packet_sent()
 
     def _spi_write(self, register, payload):

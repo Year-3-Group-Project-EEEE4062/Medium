@@ -1,4 +1,5 @@
 import utime
+import struct
 from lib.LoRa.ulora import LoRa, ModemConfig, SPIConfig
 
 # Client is the sender
@@ -35,9 +36,13 @@ class mediumLoRa:
         return data
 
     def loraSenderTest(self):
+        counter = 0
+
         while True:
             # get practice message
-            data = __doubleTest
+            data = self.__doubleTest()
             self.lora.send_to_wait(data, self.SERVER_ADDRESS)
-            print("sent LoRa message!")
+            print("Data type: ", type(data))
+            counter = counter + 1
+            print("sent LoRa message No.",counter,"!")
             utime.sleep_ms(500)
