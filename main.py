@@ -5,10 +5,12 @@ import struct
 
 from displayInfo import oledDisplay
 from bleFeature import mediumBLE
-from rfTransmitter import mediumRF
 from mediumDataStorage import mediumStorage
 from processMessages import processMssg
+from rfTransmitter import mediumRF
+from loraTransmitter import mediumLoRa
 
+##################################################################
 ##################################################################
 ## Callback when data received through BLE
 def receivedBLE(data):
@@ -46,23 +48,29 @@ def disconnectedBLE():
 
 ##################################################################
 ##################################################################
-## Start of main file
+## Initialization
 
 # Create instances
 oledscreen = oledDisplay()
-bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
-nrfModule = mediumRF()
-processor = processMssg()
 # sdCard = mediumStorage()
+
+bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
+processor = processMssg()
+
+# nrfModule = mediumRF()
+loraModule = mediumLoRa()
 
 # Setup on board LED to let user know also if BLE connected or not 
 led = Pin("LED", Pin.OUT)
 led.off()
 
-nrfModule.nrfSenderTest()
+##################################################################
+## main operation
 
 # # Infinite loop
 # while True:
 #     # check if BLE connected or not
 #     if bluetoothLowEnergy.is_connected():
 #         pass
+
+loraModule.loraSenderTest()

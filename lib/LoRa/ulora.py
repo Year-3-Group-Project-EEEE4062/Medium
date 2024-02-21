@@ -270,7 +270,7 @@ class LoRa(object):
 
             if header_to == BROADCAST_ADDRESS:  # Don't wait for acks from a broadcast message
                 return True
-
+                
             start = time.time()
             while time.time() - start < self.retry_timeout + (self.retry_timeout * (getrandbits(16) / (2**16 - 1))):
                 if self._last_payload:
