@@ -1,7 +1,7 @@
 """Test for nrf24l01 module.  Portable between MicroPython targets."""
 
 import usys
-import ustruct as struct
+import struct
 import utime
 import uctypes
 from machine import Pin, SPI, SoftSPI
@@ -49,12 +49,10 @@ class mediumRF:
         while num_failures < num_needed:
             # stop listening and send packet
             self.nrf.stop_listening()
-
-            # Assign the message to a local variable
-            print("sending..")
-            
+   
             # Send the message through RF
             try:
+                print("sending..")
                 # Send the mesage directly without needing to encode
                 self.nrf.send(rfMssg)
             except OSError:
@@ -94,15 +92,10 @@ class mediumRF:
                 break
 
             # delay then loop
-            utime.sleep_ms(250)
+            utime.sleep_ms(500)
         
         # Return "No" to indicate cannot be connected to boat
         return "No"
-
-    def nrfSenderTest(self):
-        while True:
-            self.__doubleTest()
-            self.__integerTest()
 
     def __doubleTest(self):
         # Can only send a maximum of 4 doubles per transmission
@@ -110,19 +103,31 @@ class mediumRF:
         double_identifier = 0x01
 
         data = bytearray()
-        data.extend(double_identifier.to_bytes(1, byteorder='big'))
-        data.extend(struct.pack('d' * len(dataToBeSent), *dataToBeSent))
-    
+        data.extend(double_identifier.to_bytes(1,'big')) # data type identifier
+        data.extend(struct.pack('i', len(dataToBeSent))) # how many data to extracted
+        data.extend(struct.pack('d' * len(dataToBeSent), *dataToBeSent)) # the data itself
+
+        print(data)
         self.sender(data)
 
     def __integerTest(self):
         # Can only send a maximum of 4 doubles per transmission
-        dataToBeSent = [1,2,3,4,5,6,7,8]
+        dataToBeSent = [1,2,3]
         integer_identifier = 0x02
 
         data = bytearray()
-        data.extend(integer_identifier.to_bytes(1, byteorder='big'))
-        data.extend(struct.pack('i' * len(dataToBeSent), *dataToBeSent))
+        data.extend(integer_identifier.to_bytes(1,'big')) # data type identifier
+        data.extend(struct.pack('i', len(dataToBeSent))) # how many data to extracted
+        data.extend(struct.pack('i' * len(dataToBeSent), *dataToBeSent)) # the data itself
 
+        print(data)
         self.sender(data)
+
+    def nrfSenderTest(self):
+        while True:
+            self.__doubleTest()
+            # self.__integerTest()
+            utime.sleep_ms(1000)
+
+
 
