@@ -2,23 +2,10 @@
 # suppose to decode receiving message for both RF and BLE
 import machine
 from micropython import const
+import struct
 
 class processMssg:
     def __init__(self):
-        # mode identifier
-        self.remote_identifier = const(0x01)
-        self.auto_identifier = const(0x02)
-        self.time_identifier = const(0x03)
-
-        # data type identifier
-        self.integer_identifier = const(0x01)
-        self.double_identifier = const(0x02)
-
-        # Essentials for decoding message
-        mssgStartingIndex = 6
-        intBufferSize = 4
-        doubleBufferSize = 8
-
         # Variable for keeping track whether boat is currently performing an auto task or not
         # If true, no message will be sent to the boat or processed by the boat
         self.boatBusy = False
@@ -31,6 +18,13 @@ class processMssg:
         self.expectedWaypoints = 0
     
     def process(self, mssg):
+        print(len(mssg))
+
+        # mode identifier
+        remote_identifier = const(0x01)
+        auto_identifier = const(0x02)
+        time_identifier = const(0x03)
+
         print("Processing message...")
 
         # Extract the mode identifier
@@ -39,19 +33,19 @@ class processMssg:
         # Check for valid message length
         if(len(mssg)!=1):
             # Check for valid mode
-            if mode_identifier == self.remote_identifier:
+            if mode_identifier == remote_identifier:
                 # User chooses remote mode
                 instruction = self.__decodeData(mssg)
                 self.__processRemoteMssg(instruction)
                 return "R"
 
-            elif mode_identifier == self.auto_identifier:
+            elif mode_identifier == auto_identifier:
                 # User chooses auto mode
                 instruction = self.__decodeData(mssg)
                 self.__processAutoMssg(instruction)
                 return "A"
 
-            elif mode_identifier == self.time_identifier:
+            elif mode_identifier == time_identifier:
                 # Set time locally
                 instruction = self.__decodeData(mssg)
                 self.__setTimeLocally(instruction)
@@ -64,18 +58,28 @@ class processMssg:
             return "E"
 
     def __decodeData(self, mssg):
+        # data type identifier
+        integer_identifier = const(0x01)
+        double_identifier = const(0x02)
+
+        # Essentials for decoding message
+        mssgStartingIndex = 6
+        intBufferSize = 4
+        doubleBufferSize = 8
+
         dataType_identifier = mssg[1]
         
         # Get the length of the information
-        length = struct.unpack('i', mssg[2:mssgStartingIndex])[0]
+        dataLength = struct.unpack('i', mssg[2:mssgStartingIndex])[0]
 
         if dataType_identifier == double_identifier:
-            double_value = struct.unpack('d'* dataLength, data[mssgStartingIndex:mssgStartingIndex+(doubleBufferSize*dataLength)])
+            double_value = struct.unpack('d'* dataLength, mssg[mssgStartingIndex:mssgStartingIndex+(doubleBufferSize*dataLength)])
             print(double_value)
             return double_value
 
         elif dataType_identifier == integer_identifier:
-            integer_value = struct.unpack('i'* dataLength, data[mssgStartingIndex:mssgStartingIndex+(intBufferSize*dataLength)])
+            print(len( mssg[mssgStartingIndex:mssgStartingIndex+(intBufferSize*dataLength)]))
+            integer_value = struct.unpack('i'* dataLength, mssg[mssgStartingIndex:mssgStartingIndex+(intBufferSize*dataLength)])
             print(integer_value)
             return integer_value
 
@@ -132,18 +136,19 @@ class processMssg:
         # Set the RTC (Real-Time Clock) with the specified values
         rtc = machine.RTC()
 
-        # Extract date and time data
-        year = dateTime[1]+2000
-        month = dateTime[2]
-        day = dateTime[3]
+        year = dateTime[0]+2000
+        month = dateTime[1]
+        day = dateTime[2]
         weekday = 0
-        hours = dateTime[4]
-        minutes = dateTime[5]
-        seconds = dateTime[6]
+
+        hours = dateTime[3]
+        minutes = dateTime[4]
+        seconds = dateTime[5]
         subseconds = 0
 
-        # (year, month, day, weekday, hours, minutes, seconds, subseconds)
-        rtc.datetime((year, month, day, weekday, hours, minutes, seconds, subseconds))
+        # Set the local (year, month, day, weekday, hours, minutes, seconds, subseconds)
+        rtc.datetime((year, month, day, weekday, 
+                    hours, minutes, seconds, subseconds))
 
 
 

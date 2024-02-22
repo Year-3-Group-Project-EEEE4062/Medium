@@ -41,6 +41,8 @@ _UART_SERVICE = (
     (_UART_TX, _UART_RX),
 )
 
+# Have to use this to change the BLE buffer size
+#  def gatts_set_buffer
 
 class mediumBLE:
     def __init__(self, connectedCallback, disconnectCallback, receiveCallback, name="Medium"):
@@ -50,6 +52,9 @@ class mediumBLE:
         self._ble.irq(self._irq)
 
         ((self._handle_tx, self._handle_rx),) = self._ble.gatts_register_services((_UART_SERVICE,))
+
+         # Set the buffer size for the RX characteristic to 31 bytes
+        self._ble.gatts_set_buffer(self._handle_rx, 31)
         
         # Create empty set to store connections
         self._connections = set()

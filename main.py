@@ -13,9 +13,11 @@ from loraTransmitter import mediumLoRa
 ##################################################################
 ##################################################################
 ## Callback when data received through BLE
+## RaspberryPi Pico W BLE Max byte per transmission is 20 bytes
 def receivedBLE(data):
     # Expected data to be received is utf-8
     print("Received: ", data)
+    print("Length: ",len(data))
 
     mode = processor.process(data)
 
