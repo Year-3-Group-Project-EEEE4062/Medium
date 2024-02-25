@@ -8,7 +8,7 @@ from bleFeature import mediumBLE
 from mediumDataStorage import mediumStorage
 from processMessages import processMssg
 from rfTransmitter import mediumRF
-from loraTransmitter import mediumLoRa
+import mediumLoRa
 
 ##################################################################
 ##################################################################
@@ -44,6 +44,13 @@ def disconnectedBLE():
     # This to indicate to user that BLE NOT connected
     led.off()
 
+def bleTtest():
+    # Infinite loop
+    while True:
+        # check if BLE connected or not
+        if bluetoothLowEnergy.is_connected():
+            pass
+
 ##################################################################
 ##################################################################
 ## Initialization
@@ -56,7 +63,7 @@ bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 processor = processMssg()
 
 # nrfModule = mediumRF()
-# loraModule = mediumLoRa()
+loraModule = mediumLoRa.mediumLoRa_TX()
 
 # Setup on board LED to let user know also if BLE connected or not 
 led = Pin("LED", Pin.OUT)
@@ -65,10 +72,5 @@ led.off()
 ##################################################################
 ## main operation
 
-# Infinite loop
-while True:
-    # check if BLE connected or not
-    if bluetoothLowEnergy.is_connected():
-        pass
-
-# loraModule.loraSenderTest()
+# bleTtest()
+loraModule.loraSenderTest()
