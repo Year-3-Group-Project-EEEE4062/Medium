@@ -27,7 +27,7 @@ class mediumStorage:
         # Debug print SD card directory and files
         print(os.listdir('/sd'))
 
-    def writetoSD(self, fileName, data):
+    def writetoSDTest(self, fileName, data):
         # Have a lot to edit in this section to suit application
 
         # Create the full filename directory 

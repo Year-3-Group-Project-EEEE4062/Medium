@@ -15,10 +15,7 @@ import mediumLoRa
 ## Callback when data received through BLE
 ## RaspberryPi Pico W BLE Max byte per transmission is 20 bytes
 def receivedBLE(data):
-    # Expected data to be received is utf-8
-    print("Received: ", data)
-    print("Length: ",len(data))
-
+    # Process the received BLE message
     mode = processor.process(data)
 
     oledscreen.actionMssg("No",mode)
@@ -54,10 +51,8 @@ def bleTtest():
 ##################################################################
 ##################################################################
 ## Initialization
-
-# Create instances
-oledscreen = oledDisplay()
-# sdCard = mediumStorage()
+oledscreen = oledDisplay() 
+sdCard = mediumStorage()
 
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 processor = processMssg()
@@ -72,5 +67,7 @@ led.off()
 ##################################################################
 ## main operation
 
+# Test Functions
 # bleTtest()
-loraModule.loraSenderTest()
+# loraModule.loraSenderTest()
+
