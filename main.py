@@ -70,4 +70,5 @@ led.off()
 # Test Functions
 # bleTtest()
 # loraModule.loraSenderTest()
+# sdCard.writetoSDTest()
 
