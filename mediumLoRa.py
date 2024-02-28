@@ -14,8 +14,8 @@ class mediumLoRa_TX:
         RFM95_INT = 18 # Interrupt GPIO Pin (DIO0)
         RF95_FREQ = 433.0
         RF95_POW = 20
-        self.CLIENT_ADDRESS = 253
-        self.SERVER_ADDRESS = 199
+        self.CLIENT_ADDRESS = 243
+        self.SERVER_ADDRESS = 189
 
         # initialise radio
         self.lora = LoRa(RFM95_SPIBUS, RFM95_INT, self.CLIENT_ADDRESS, RFM95_CS,
