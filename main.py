@@ -1,13 +1,10 @@
 from machine import Pin
 import utime
-import uctypes
-import struct
 
 from displayInfo import oledDisplay
 from bleFeature import mediumBLE
 from mediumDataStorage import mediumStorage
 from processMessages import processMssg
-from rfTransmitter import mediumRF
 import mediumLoRa
 
 ##################################################################
@@ -57,7 +54,6 @@ sdCard = mediumStorage()
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 processor = processMssg()
 
-# nrfModule = mediumRF()
 loraModule = mediumLoRa.mediumLoRa_TX()
 
 # Setup on board LED to let user know also if BLE connected or not 
