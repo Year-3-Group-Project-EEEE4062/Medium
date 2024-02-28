@@ -111,6 +111,6 @@ class mediumBLE:
         return len(self._connections) > 0
 
     def _advertise(self, interval_us=500000):
-        print("Starting advertising")
+        # print("Starting advertising")
         self._ble.gap_advertise(interval_us, adv_data=self._payload)
         

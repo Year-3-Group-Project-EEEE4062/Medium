@@ -10,12 +10,14 @@ import mediumLoRa
 ##################################################################
 ##################################################################
 ## Callback when data received through BLE
-## RaspberryPi Pico W BLE Max byte per transmission is 20 bytes
 def receivedBLE(data):
     # Process the received BLE message
     mode = processor.process(data)
 
-    oledscreen.actionMssg("No",mode)
+    # Send BLE data to boat through LoRa
+    loraModule_TX.loraTX(data)
+
+    oledscreen.actionMssg("No", mode)
 
 ##################################################################
 ## Callback when BLE connected to phone
@@ -48,13 +50,27 @@ def bleTtest():
 ##################################################################
 ##################################################################
 ## Initialization
-oledscreen = oledDisplay() 
-sdCard = mediumStorage()
+oledscreen = oledDisplay()
+print("Medium Display Initialized!")
+
+# MicroSD Adapter more prone to failing
+try:
+    sdCard = mediumStorage()
+    print("Medium MicroSD Initialized!")
+except OSError:
+    oledscreen.microSDProblemMssg()
+
 
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
-processor = processMssg()
+print("Medium BLE Initialized!!")
 
-loraModule = mediumLoRa.mediumLoRa_TX()
+processor = processMssg() 
+
+loraModule_TX = mediumLoRa.mediumLoRa_TX()
+print("Medium LoRa TX initialized!!")
+
+# loraModule_RX = mediumLoRa.mediumLoRa_RX()
+# print("Medium LoRa RX initialized!!")
 
 # Setup on board LED to let user know also if BLE connected or not 
 led = Pin("LED", Pin.OUT)
@@ -63,8 +79,10 @@ led.off()
 ##################################################################
 ## main operation
 
+# loraModule_RX.loraRX()
+
 # Test Functions
-# bleTtest()
+bleTtest()
 # loraModule.loraSenderTest()
 # sdCard.writetoSDTest()
 

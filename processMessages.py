@@ -18,8 +18,6 @@ class processMssg:
         self.expectedWaypoints = 0
     
     def process(self, mssg):
-        print(len(mssg))
-
         # mode identifier
         remote_identifier = const(0x01)
         auto_identifier = const(0x02)

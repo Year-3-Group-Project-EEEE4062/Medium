@@ -20,7 +20,7 @@ class mediumStorage:
 
         # Create instance of sdcard class from driver library
         sdAdapter=sdcard.SDCard(spi,cs = Pin(13))
-        print("SD Adapter initialized!!")
+        # print("SD Adapter initialized!!")
 
         # Create a instance of MicroPython Unix-like Virtual File System (VFS),
         vfs=os.VfsFat(sdAdapter)
@@ -29,7 +29,7 @@ class mediumStorage:
         os.mount(sdAdapter,'/sd')
 
         # Debug print SD card directory and files
-        print(os.listdir('/sd'))
+        # print(os.listdir('/sd'))
 
     def writeToStorage(self):
         # The method for writing data received from LoRa

@@ -36,17 +36,21 @@ class oledDisplay:
         self.oled.text("Stay safe!!", 0, 30)
         self.oled.show()
 
+    def microSDProblemMssg(self):
+        self.oled.fill(0)
+        self.oled.text("MicroSD Failed!", 0, 10)
+        self.oled.text("OFF Medium, ", 0, 30)
+        self.oled.text("Then ON Medium", 0, 50)
+        self.oled.show()
+
     def actionMssg(self, boatStatus, mode):
         self.oled.fill(0)
 
         self.oled.text("Boat Ping: ", 0, 10)
         self.oled.text(boatStatus, 85, 10)
 
-        self.oled.text("Boat Busy: ", 0, 25)
-        self.oled.text(boatStatus, 85, 25)
-
-        self.oled.text("Mode     : ", 0, 40)
-        self.oled.text(mode, 85, 40)
+        self.oled.text("Mode     : ", 0, 25)
+        self.oled.text(mode, 85, 25)
 
         # Get the current time (local time)
         current_time = utime.localtime()
@@ -65,8 +69,8 @@ class oledDisplay:
         
         stringTime = stringHours+":"+stringMinutes
 
-        self.oled.text("Last Time: ", 0, 55)
-        self.oled.text(stringTime, 85, 55)
+        self.oled.text("Last Time: ", 0, 40)
+        self.oled.text(stringTime, 85, 40)
 
         self.oled.show()
         

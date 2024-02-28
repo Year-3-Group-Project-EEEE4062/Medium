@@ -62,12 +62,8 @@ class ModemConfig():
 
 class SPIConfig():
     # spi pin defs for various boards (channel, sck, mosi, miso)
-    rp2_00 = (0, 2, 3, 0)
-    rp2_0 = (0, 6, 7, 4)
-    rp2_1 = (1, 10, 11, 8)
-    esp8286_1 = (1, 14, 13, 12)
-    esp32_1 = (1, 14, 13, 12)
-    esp32_2 = (2, 18, 23, 19)
+    rx = (0, 2, 3, 0)
+    tx = (0, 6, 7, 4)
 
 class LoRa(object):
     def __init__(self, spi_channel, interrupt, this_address, cs_pin, reset_pin=None, freq=868.0, tx_power=14,
@@ -287,10 +283,10 @@ class LoRa(object):
                             self._last_payload.header_id == self._last_header_id:
 
                         # We got an ACK
-                        print("Receiver Got!!")
+                        print("Message Acknowlegde!!")
                         return True
         
-        print("Receiver Status Unknown!!")
+        print("Message No Reply!!")
         return False
 
     def send_ack(self, header_to, header_id):
