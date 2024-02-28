@@ -1,4 +1,4 @@
-from machine import Pin, Timer
+from machine import Pin
 import utime
 import uctypes
 import struct
