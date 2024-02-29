@@ -54,11 +54,13 @@ oledscreen = oledDisplay()
 print("Medium Display Initialized!")
 
 # MicroSD Adapter more prone to failing
-try:
-    sdCard = mediumStorage()
-    print("Medium MicroSD Initialized!")
-except OSError:
-    oledscreen.microSDProblemMssg()
+while True:
+    try:
+        sdCard = mediumStorage()
+        print("Medium MicroSD Initialized!")
+        break
+    except OSError:
+        oledscreen.microSDProblemMssg()
 
 
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
@@ -79,6 +81,7 @@ led.off()
 ##################################################################
 ## main operation
 
+oledscreen.welcomeMssg()
 # loraModule_RX.loraRX()
 
 # Test Functions

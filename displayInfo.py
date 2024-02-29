@@ -16,6 +16,7 @@ class oledDisplay:
         #create an instance
         self.oled = ssd1306.SSD1306_I2C(self.oled_width, self.oled_height, self.i2c)
 
+    def welcomeMssg(self):
         #print initialized message
         self.oled.fill(0)
         self.oled.text("Medium Started", 0, 10)
