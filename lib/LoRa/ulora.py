@@ -265,7 +265,7 @@ class LoRa(object):
         self.set_mode_tx()
         return True
 
-    def send_to_wait(self, data, header_to, header_flags=0, retries=1):
+    def send_to_wait(self, data, header_to, header_flags=0, retries=0):
         self._last_header_id += 1
 
         for _ in range(retries + 1):
@@ -283,10 +283,7 @@ class LoRa(object):
                             self._last_payload.header_id == self._last_header_id:
 
                         # We got an ACK
-                        print("Message Acknowlegde!!")
                         return True
-        
-        print("Message No Reply!!")
         return False
 
     def send_ack(self, header_to, header_id):

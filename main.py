@@ -5,7 +5,7 @@ from displayInfo import oledDisplay
 from bleFeature import mediumBLE
 from mediumDataStorage import mediumStorage
 from processMessages import processMssg
-import mediumLoRa
+from mediumLoRa import mediumLoRa
 
 ##################################################################
 ##################################################################
@@ -15,10 +15,11 @@ def receivedBLE(data):
     mode = processor.process(data)
 
     # Send BLE data to boat through LoRa
-    loraModule_TX.loraTX(data)
-
-    oledscreen.actionMssg("No", mode)
-
+    # But never send time info for RTC as boat pico w dont need it
+    if mode != "I":
+        pinged = LoRa.sendForAck(data)
+        oledscreen.actionMssg(pinged, mode)
+    
 ##################################################################
 ## Callback when BLE connected to phone
 def connectedBLE():
@@ -68,11 +69,8 @@ print("Medium BLE Initialized!!")
 
 processor = processMssg() 
 
-loraModule_TX = mediumLoRa.mediumLoRa_TX()
-print("Medium LoRa TX initialized!!")
-
-# loraModule_RX = mediumLoRa.mediumLoRa_RX()
-# print("Medium LoRa RX initialized!!")
+LoRa = mediumLoRa()
+print("Medium LoRa initialized!!")
 
 # Setup on board LED to let user know also if BLE connected or not 
 led = Pin("LED", Pin.OUT)

@@ -5,7 +5,7 @@ from lib.LoRa.ulora import LoRa, SPIConfig
 # Client is the sender
 # Server is the receiver
 
-class mediumLoRa_TX:
+class LoRa_TX:
     def __init__(self):
     # Lora Parameters
         RFM95_RST = 17 # RST GPIO Pin
@@ -23,10 +23,9 @@ class mediumLoRa_TX:
                      acks=True)
 
     def loraTX(self, data):
-        ack = self.lora.send_to_wait(data, self.SERVER_ADDRESS)
-        print(ack)
+        self.lora.send_to_wait(data, self.SERVER_ADDRESS)
 
-class mediumLoRa_RX:
+class LoRa_RX:
     def __init__(self):
         # for debugging purposes during testing
         self.counter = 0
@@ -46,58 +45,56 @@ class mediumLoRa_RX:
                         reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, 
                         acks=True)
 
-    def loraRX(self):
+    def loraRX(self, rx_cb):
         # set callback (overwriting exisiting callback)
-        self.lora.on_recv = self.testCallback
+        self.lora.on_recv = rx_cb
 
         # set to listen continuously
         self.lora.set_mode_rx()
 
-    def __extractData(self, buf):
-        # data type identifier
-        integer_identifier = 0x01
-        double_identifier = 0x02
+class mediumLoRa:
+    def __init__(self):
+        # Timeout to get ack message from boat
+        self.pingTimeout = 0.2
 
-        # Essentials for decoding message
-        mssgStartingIndex = 6
-        intBufferSize = 4
-        doubleBufferSize = 8
+        # To know if a send is acknowledged or not
+        self.boatPinged = False
 
-        dataType_identifier = mssg[1]
+        # Create instances of each tx and rx class
+        self.mediumLoRa_TX = LoRa_TX()
+        self.mediumLoRa_RX = LoRa_RX()
+
+        # Initialize interrupt listener for LoRa
+        # pass callback function to it
+        self.mediumLoRa_RX.loraRX(self.rx_cb)
+
+    # LoRa interrupt receiver callback function
+    def rx_cb(self, payload):
+        print("Reply: ",payload.message)
         
-        # Get the length of the information
-        dataLength = struct.unpack('i', mssg[2:mssgStartingIndex])[0]
+        # if(payload.message == '!'):
+        #     self.boatPinged = True
+        # else:
+        #     pass
+        # # Either way, able to communicate with boat
 
-        if dataType_identifier == double_identifier:
-            double_value = struct.unpack('d'* dataLength, mssg[mssgStartingIndex:mssgStartingIndex+(doubleBufferSize*dataLength)])
-            print(double_value)
-            return double_value
+    # LoRa sender and wait for acknowledgement
+    def sendForAck(self, mssg):
+        # Send data through LoRa
+        self.mediumLoRa_TX.loraTX(mssg)
 
-        elif dataType_identifier == integer_identifier:
-            print(len( mssg[mssgStartingIndex:mssgStartingIndex+(intBufferSize*dataLength)]))
-            integer_value = struct.unpack('i'* dataLength, mssg[mssgStartingIndex:mssgStartingIndex+(intBufferSize*dataLength)])
-            print(integer_value)
-            return integer_value
+        start = time.time()
+        while time.time() - start < pingTimeout:
+            if self.boatPinged:
+                # Indicating message was acknowledged
 
-        else:
-            raise ValueError("Unknown identifier")
+                # Reset ack bool variable
+                self.boatPinged = False
+                return 'Y'
         
-    def testCallback(self, payload):
-        self.counter = self.counter + 1
-        print("******************************************")
-        print("From:", payload.header_from)
-        print("Message No.",self.counter)
-        print("Received:", self.__extractData(payload.message))
-        print("RSSI: {}; SNR: {}".format(payload.rssi, payload.snr))
-        pass
+        return 'N'
 
-    def loraReceiverTest(self):
-        # set callback (overwriting exisiting callback)
-        self.lora.on_recv = self.testCallback
 
-        # set to listen continuously
-        self.lora.set_mode_rx()
 
-        # loop and wait for data
-        while True:
-            utime.sleep_ms(10)
+
+

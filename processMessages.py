@@ -47,7 +47,7 @@ class processMssg:
                 # Set time locally
                 instruction = self.__decodeData(mssg)
                 self.__setTimeLocally(instruction)
-                return "Idle"
+                return "I"
 
             else:
                 # Invalid mode
