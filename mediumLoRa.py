@@ -1,4 +1,4 @@
-import utime
+import time
 import struct
 from lib.LoRa.ulora import LoRa, SPIConfig
 
@@ -55,10 +55,13 @@ class LoRa_RX:
 class mediumLoRa:
     def __init__(self):
         # Timeout to get ack message from boat
-        self.pingTimeout = 0.2
+        self.pingTimeout = 0.5
 
         # To know if a send is acknowledged or not
         self.boatPinged = False
+
+        # To determine if there is a message to be sent
+        self.flag = False
 
         # Create instances of each tx and rx class
         self.mediumLoRa_TX = LoRa_TX()
@@ -70,29 +73,40 @@ class mediumLoRa:
 
     # LoRa interrupt receiver callback function
     def rx_cb(self, payload):
-        print("Reply: ",payload.message)
-        
-        # if(payload.message == '!'):
-        #     self.boatPinged = True
-        # else:
-        #     pass
-        # # Either way, able to communicate with boat
+        if(payload.message.decode() == '!'):
+            self.boatPinged = True
+        else:
+            pass
+        # Either way, able to communicate with boat
 
     # LoRa sender and wait for acknowledgement
-    def sendForAck(self, mssg):
+    def sendForAck(self):
+        # Indicate it has been transferred
+        self.flag = False
+
         # Send data through LoRa
-        self.mediumLoRa_TX.loraTX(mssg)
+        self.mediumLoRa_TX.loraTX(self.mssgForSent)
 
         start = time.time()
-        while time.time() - start < pingTimeout:
+        while time.time() - start < self.pingTimeout:
             if self.boatPinged:
-                # Indicating message was acknowledged
-
                 # Reset ack bool variable
                 self.boatPinged = False
                 return 'Y'
         
+        self.boatPinged = False
         return 'N'
+
+    def queueForTransfer(self, mssg, mode):
+        self.mssgForSent = mssg
+        self.mode = mode
+        self.flag = True
+
+    def getMode(self):
+        return self.mode
+
+    def checkLoRaFlag(self):
+        return self.flag
 
 
 

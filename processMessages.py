@@ -32,15 +32,9 @@ class processMssg:
         if(len(mssg)!=1):
             # Check for valid mode
             if mode_identifier == remote_identifier:
-                # User chooses remote mode
-                instruction = self.__decodeData(mssg)
-                self.__processRemoteMssg(instruction)
                 return "R"
 
             elif mode_identifier == auto_identifier:
-                # User chooses auto mode
-                instruction = self.__decodeData(mssg)
-                self.__processAutoMssg(instruction)
                 return "A"
 
             elif mode_identifier == time_identifier:
@@ -83,52 +77,6 @@ class processMssg:
 
         else:
             raise ValueError("Unknown identifier")
-
-    def __processAutoMssg(self, autoMssg):
-        pass
-
-    def __processRemoteMssg(self, remoteMssg):
-        # Determine whether it is a feature or movement messsage
-        # feature message's length is always 1
-        # movement message's length is always 2
-        if(len(remoteMssg)==1):
-            print("User using remote features!")
-            # This means that it is a features message
-            if(remoteMssg[0]==0):
-                # Indicating user using measure feature
-                print("Using remote measure feature!")
-                # Call that function here to do the feature
-
-            elif(remoteMssg[0]==1):
-                # Indicating user using go home feature
-                print("Using remote go home feature!")
-                # Call that function here to do the feature
-
-        elif(len(remoteMssg)==2):
-            print("User using remote movements!")
-            # This means that it is a movement message
-            # Have to ask Donald how he sets slow, average and fast motion on the boat
-
-            # Check for movement only (temporary)
-            if(remoteMssg[0]==0):
-                print("Boat moves forward!")
-                # Call the motor function here
-
-            elif(remoteMssg[0]==1):
-                print("Boat moves backwards!")
-                # Call the motor function here
-
-            elif(remoteMssg[0]==2):
-                print("Boat moves rightwards!")
-                # Call the motor function here
-
-            elif(remoteMssg[0]==3):
-                print("Boat moves leftwards!")
-                # Call the motor function here
-
-            else:
-                # Invalid movement control
-                print("Invalid movement!")
 
     def __setTimeLocally(self, dateTime):
         # Set the RTC (Real-Time Clock) with the specified values

@@ -17,9 +17,8 @@ def receivedBLE(data):
     # Send BLE data to boat through LoRa
     # But never send time info for RTC as boat pico w dont need it
     if mode != "I":
-        pinged = LoRa.sendForAck(data)
-        oledscreen.actionMssg(pinged, mode)
-    
+        LoRa.queueForTransfer(data, mode)
+
 ##################################################################
 ## Callback when BLE connected to phone
 def connectedBLE():
@@ -41,13 +40,6 @@ def disconnectedBLE():
     # This to indicate to user that BLE NOT connected
     led.off()
 
-def bleTtest():
-    # Infinite loop
-    while True:
-        # check if BLE connected or not
-        if bluetoothLowEnergy.is_connected():
-            pass
-
 ##################################################################
 ##################################################################
 ## Initialization
@@ -68,7 +60,6 @@ bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 print("Medium BLE Initialized!!")
 
 processor = processMssg() 
-
 LoRa = mediumLoRa()
 print("Medium LoRa initialized!!")
 
@@ -79,11 +70,20 @@ led.off()
 ##################################################################
 ## main operation
 
-oledscreen.welcomeMssg()
-# loraModule_RX.loraRX()
-
 # Test Functions
-bleTtest()
 # loraModule.loraSenderTest()
 # sdCard.writetoSDTest()
+
+oledscreen.welcomeMssg()
+
+# Infinite loop
+while True:
+    # check if there is a message to be sent or not
+    if LoRa.checkLoRaFlag():
+        print("##################################################################")
+        print("New data to be sent!!")
+        pinged = LoRa.sendForAck()
+        mode = LoRa.getMode()
+        oledscreen.actionMssg(pinged, mode)
+
 
