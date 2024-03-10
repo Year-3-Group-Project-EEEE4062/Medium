@@ -22,31 +22,33 @@ class processMssg:
         remote_identifier = const(0x01)
         auto_identifier = const(0x02)
         time_identifier = const(0x03)
+        test_identifier = const(0x21)
 
         print("Processing message...")
 
         # Extract the mode identifier
         mode_identifier = mssg[0]
 
-        # Check for valid message length
-        if(len(mssg)!=1):
-            # Check for valid mode
-            if mode_identifier == remote_identifier:
-                return "R"
+        print(mode_identifier)
 
-            elif mode_identifier == auto_identifier:
-                return "A"
+        # Check for valid mode
+        if mode_identifier == remote_identifier:
+            return "R"
 
-            elif mode_identifier == time_identifier:
-                # Set time locally
-                instruction = self.__decodeData(mssg)
-                self.__setTimeLocally(instruction)
-                return "I"
+        elif mode_identifier == auto_identifier:
+            return "A"
 
-            else:
-                # Invalid mode
-                return "E"
+        elif mode_identifier == time_identifier:
+            # Set time locally
+            instruction = self.__decodeData(mssg)
+            self.__setTimeLocally(instruction)
+            return "I"
+
+        elif mode_identifier == test_identifier:
+            return "T"
+            
         else:
+            # Invalid mode
             return "E"
 
     def __decodeData(self, mssg):
