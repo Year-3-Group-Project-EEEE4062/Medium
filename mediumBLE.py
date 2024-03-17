@@ -30,7 +30,7 @@ rxUUID = 'd0ac9ff2-4b3c-461e-bcde-6652b8190a0a'
 _UART_UUID = bluetooth.UUID(serviceUUID)
 _UART_TX = (
     bluetooth.UUID(txUUID),
-    _FLAG_READ | _FLAG_NOTIFY | _FLAG_WRITE ,
+    _FLAG_READ | _FLAG_NOTIFY,
 )
 _UART_RX = (
     bluetooth.UUID(rxUUID),

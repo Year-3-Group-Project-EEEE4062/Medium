@@ -53,7 +53,7 @@ class LoRa_RX:
         self.lora.set_mode_rx()
 
 class mediumLoRa:
-    def __init__(self):
+    def __init__(self, bleSendCallback):
         # Timeout to get ack message from boat
         self.pingTimeout = 0.5
 
@@ -62,6 +62,8 @@ class mediumLoRa:
 
         # To determine if there is a message to be sent
         self.flag = False
+
+        self.ble_cb = bleSendCallback
 
         # Create instances of each tx and rx class
         self.mediumLoRa_TX = LoRa_TX()
@@ -76,7 +78,8 @@ class mediumLoRa:
         if(payload.message.decode() == '!'):
             self.boatPinged = True
         else:
-            pass
+            # Temporary as not all other data received will notify app
+            self.ble_cb(payload.message)
         # Either way, able to communicate with boat
 
     # LoRa sender and wait for acknowledgement

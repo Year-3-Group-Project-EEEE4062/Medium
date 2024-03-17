@@ -2,7 +2,7 @@ from machine import Pin
 import utime
 
 from displayInfo import oledDisplay
-from bleFeature import mediumBLE
+from mediumBLE import mediumBLE
 from mediumDataStorage import mediumStorage
 from processMessages import processMssg
 from mediumLoRa import mediumLoRa
@@ -18,6 +18,9 @@ def receivedBLE(data):
     # But never send time info for RTC as boat pico w dont need it
     if mode != "I":
         LoRa.queueForTransfer(data, mode)
+
+def notifyBLE(data):
+    bluetoothLowEnergy.send(data)
 
 ##################################################################
 ## Callback when BLE connected to phone
@@ -60,7 +63,7 @@ bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
 print("Medium BLE Initialized!!")
 
 processor = processMssg() 
-LoRa = mediumLoRa()
+LoRa = mediumLoRa(notifyBLE)
 print("Medium LoRa initialized!!")
 
 # Setup on board LED to let user know also if BLE connected or not 
