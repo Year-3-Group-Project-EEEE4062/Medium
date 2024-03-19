@@ -18,6 +18,7 @@ def receivedBLE(data):
     # But never send time info for RTC as boat pico w dont need it
     if mode != "I":
         LoRa.queueForTransfer(data, mode)
+        print(data)
 
 def notifyBLE(data):
     bluetoothLowEnergy.send(data)
@@ -79,14 +80,18 @@ led.off()
 
 oledscreen.welcomeMssg()
 
-# Infinite loop
-while True:
-    # check if there is a message to be sent or not
-    if LoRa.checkLoRaFlag():
-        print("##################################################################")
-        print("New data to be sent!!")
-        pinged = LoRa.sendForAck()
-        mode = LoRa.getMode()
-        oledscreen.actionMssg(pinged, mode)
+try:
+    # Infinite loop
+    while True:
+        # check if there is a message to be sent or not
+        if LoRa.checkLoRaFlag():
+            print("##################################################################")
+            pinged = LoRa.sendForAck()
+            mode = LoRa.getMode()
+            oledscreen.actionMssg(pinged, mode)
+
+except KeyboardInterrupt:
+    pass
+
 
 
