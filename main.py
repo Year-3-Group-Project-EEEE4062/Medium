@@ -18,10 +18,10 @@ def receivedBLE(data):
     # But never send time info for RTC as boat pico w dont need it
     if mode != "I":
         LoRa.queueForTransfer(data, mode)
-        print(data)
 
 def notifyBLE(data):
     bluetoothLowEnergy.send(data)
+    print("Notified: ",data)
 
 ##################################################################
 ## Callback when BLE connected to phone
