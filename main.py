@@ -1,22 +1,30 @@
-from machine import Pin, Timer
-import time
-import uctypes
+from machine import Pin
+import utime
 
 from displayInfo import oledDisplay
-from bleFeature import mediumBLE
-import rfTransmitter
+from mediumBLE import mediumBLE
+from mediumDataStorage import mediumStorage
+from processMessages import processMssg
+from mediumLoRa import mediumLoRa
 
+##################################################################
+##################################################################
+## Callback when data received through BLE
 def receivedBLE(data):
-    # Expected data to be received is utf-8
-    print("Received: ", data)
+    # Process the received BLE message
+    mode = processor.process(data)
 
-    # Decode the uint8 data received
-    decoded_data = data.decode('utf-8')
+    # Send BLE data to boat through LoRa
+    # But never send time info for RTC as boat pico w dont need it
+    if mode != "I":
+        LoRa.queueForTransfer(data, mode)
 
-    oledscreen.actionMssg(decoded_data)
+def notifyBLE(data):
+    bluetoothLowEnergy.send(data)
+    print("Notified: ",data)
 
-    rfTransmitter.initiator(decoded_data)
-
+##################################################################
+## Callback when BLE connected to phone
 def connectedBLE():
     print("Connected")
     oledscreen.connectedMssg()
@@ -24,7 +32,10 @@ def connectedBLE():
     # Turn ON onboard LED
     # This to indicate to user that BLE is connected
     led.on()
+    utime.sleep_ms(50)
 
+##################################################################
+## Callback when BLE disconnected from to phone
 def disconnectedBLE():
     print("Disconnected")
     oledscreen.disconnectedMssg()
@@ -33,14 +44,54 @@ def disconnectedBLE():
     # This to indicate to user that BLE NOT connected
     led.off()
 
+##################################################################
+##################################################################
+## Initialization
 oledscreen = oledDisplay()
+print("Medium Display Initialized!")
+
+# MicroSD Adapter more prone to failing
+while True:
+    try:
+        sdCard = mediumStorage()
+        print("Medium MicroSD Initialized!")
+        break
+    except OSError:
+        oledscreen.microSDProblemMssg()
+
+
 bluetoothLowEnergy = mediumBLE(connectedBLE, disconnectedBLE, receivedBLE)
+print("Medium BLE Initialized!!")
+
+processor = processMssg() 
+LoRa = mediumLoRa(notifyBLE)
+print("Medium LoRa initialized!!")
 
 # Setup on board LED to let user know also if BLE connected or not 
 led = Pin("LED", Pin.OUT)
 led.off()
 
-while True:
-    # check if BLE connected or not
-    if bluetoothLowEnergy.is_connected():
-        continue
+##################################################################
+## main operation
+
+# Test Functions
+# loraModule.loraSenderTest()
+# sdCard.writetoSDTest()
+
+oledscreen.welcomeMssg()
+
+try:
+    # Infinite loop
+    while True:
+        # check if there is a message to be sent or not
+        if LoRa.checkLoRaFlag():
+            print("##################################################################")
+            pinged = LoRa.sendForAck()
+            mode = LoRa.getMode()
+            oledscreen.actionMssg(pinged, mode)
+
+except KeyboardInterrupt:
+    pass
+
+
+

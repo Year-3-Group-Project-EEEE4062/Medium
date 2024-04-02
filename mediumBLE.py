@@ -30,7 +30,7 @@ rxUUID = 'd0ac9ff2-4b3c-461e-bcde-6652b8190a0a'
 _UART_UUID = bluetooth.UUID(serviceUUID)
 _UART_TX = (
     bluetooth.UUID(txUUID),
-    _FLAG_READ | _FLAG_NOTIFY | _FLAG_WRITE ,
+    _FLAG_READ | _FLAG_NOTIFY,
 )
 _UART_RX = (
     bluetooth.UUID(rxUUID),
@@ -41,6 +41,8 @@ _UART_SERVICE = (
     (_UART_TX, _UART_RX),
 )
 
+# Have to use this to change the BLE buffer size
+#  def gatts_set_buffer
 
 class mediumBLE:
     def __init__(self, connectedCallback, disconnectCallback, receiveCallback, name="Medium"):
@@ -50,6 +52,9 @@ class mediumBLE:
         self._ble.irq(self._irq)
 
         ((self._handle_tx, self._handle_rx),) = self._ble.gatts_register_services((_UART_SERVICE,))
+
+         # Set the buffer size for the RX characteristic to 31 bytes
+        self._ble.gatts_set_buffer(self._handle_rx, 31)
         
         # Create empty set to store connections
         self._connections = set()
@@ -106,6 +111,6 @@ class mediumBLE:
         return len(self._connections) > 0
 
     def _advertise(self, interval_us=500000):
-        print("Starting advertising")
+        # print("Starting advertising")
         self._ble.gap_advertise(interval_us, adv_data=self._payload)
         
