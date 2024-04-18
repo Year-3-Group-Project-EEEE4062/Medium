@@ -55,7 +55,7 @@ class LoRa_RX:
 class mediumLoRa:
     def __init__(self, bleSendCallback):
         # Timeout to get ack message from boat
-        self.pingTimeout = 0.9
+        self.pingTimeout = 0.4
 
         # To know if a send is acknowledged or not
         self.boatPinged = False
@@ -93,15 +93,14 @@ class mediumLoRa:
         # if no respond, boat no within range
         for i in range(1,3):
             # Send data through LoRa
-            self.mediumLoRa_TX.loraTX('!'.encode())
+            self.mediumLoRa_TX.loraTX(self.mssgForSent)
             
             start = time.time()
             while time.time() - start < self.pingTimeout:
                 if self.boatPinged:
                     # Reset ack bool variable
                     self.boatPinged = False
-                    self.mediumLoRa_TX.loraTX(self.mssgForSent)
-                    return 'Y' 
+                    return 'Y'
         
         self.boatPinged = False
         return 'N'

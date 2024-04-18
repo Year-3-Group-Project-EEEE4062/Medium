@@ -5,32 +5,21 @@ from micropython import const
 import struct
 
 class processMssg:
-    def __init__(self):
-        # Variable for keeping track whether boat is currently performing an auto task or not
-        # If true, no message will be sent to the boat or processed by the boat
-        self.boatBusy = False
-
-        # Remote mode variables
-
-        # Auto mode variables
-        self.getWaypoints = False
-        self.getFileName = False
-        self.expectedWaypoints = 0
-    
     def process(self, mssg):
         # mode identifier
         remote_identifier = const(0x01)
         auto_identifier = const(0x02)
         time_identifier = const(0x03)
+        bleTest_identifier = const(0x04)
         test_identifier = const(0x21)
-
+        
         print("Processing message...")
 
         # Extract the mode identifier
         mode_identifier = mssg[0]
 
         print(mode_identifier)
-
+        
         # Check for valid mode
         if mode_identifier == remote_identifier:
             return "R"
@@ -46,6 +35,9 @@ class processMssg:
 
         elif mode_identifier == test_identifier:
             return "T"
+
+        elif mode_identifier == bleTest_identifier:
+            return "BRT"
             
         else:
             # Invalid mode
