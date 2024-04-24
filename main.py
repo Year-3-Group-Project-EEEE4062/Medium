@@ -32,7 +32,6 @@ def connectedBLE():
     # Turn ON onboard LED
     # This to indicate to user that BLE is connected
     led.on()
-    utime.sleep_ms(50)
 
 ##################################################################
 ## Callback when BLE disconnected from to phone
