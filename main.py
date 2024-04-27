@@ -7,17 +7,16 @@ from mediumDataStorage import mediumStorage
 from processMessages import processMssg
 from mediumLoRa import mediumLoRa
 
+array_2D = []
 ##################################################################
 ##################################################################
 ## Callback when data received through BLE
 def receivedBLE(data):
     # Process the received BLE message
-    mode = processor.process(data)
+    mode, instruction = processor.process(data)
 
-    # Send BLE data to boat through LoRa
-    # But never send time info for RTC as boat pico w dont need it
-    if mode != "I":
-        LoRa.queueForTransfer(data, mode)
+    if mode=="BRT":
+        array_2D.append(instruction)
 
 def notifyBLE(data):
     bluetoothLowEnergy.send(data)
@@ -42,6 +41,7 @@ def disconnectedBLE():
     # Turn OFF onboard LED
     # This to indicate to user that BLE NOT connected
     led.off()
+    sdCard.writeToStorage(array_2D)
 
 ##################################################################
 ##################################################################

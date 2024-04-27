@@ -31,9 +31,48 @@ class mediumStorage:
         # Debug print SD card directory and files
         # print(os.listdir('/sd'))
 
-    def writeToStorage(self):
-        # The method for writing data received from LoRa
-        pass
+    def writeToStorage(self, data):
+        fileName = "BLE_Range Test"
+        header = ["RSSI", "Latitude", "Longitude"]
+
+        # Create the full filename directory 
+        fullDirectory = self.mountDirectory+fileName+self.extension
+
+
+        with open(fullDirectory,"w") as f:
+            # Write the header of the file
+            for i in header:
+                try:
+                    f.write(i)
+                    f.write(",")
+                    
+                except OSError:
+                    print("Error when trying to write!!")
+            
+            # Write new line
+            try:
+                f.write("\r\n")
+            except OSError:
+                print("Error when trying to create new line!!")
+
+            # Write data to the csv file
+            for row in data:
+                for column in row:
+                    # Write a row of data
+                    try:
+                        f.write(str(column))
+                        f.write(",")
+                        
+                    except OSError:
+                        print("Error when trying to write!!")
+                
+                # Write new line for next row of data
+                try:
+                    f.write("\r\n")
+                except OSError:
+                    print("Error when trying to create new line!!")
+        
+        print("Saved file!!")
 
     def __generateRandomDataset(self):
         # Generate random data for each column
@@ -64,60 +103,40 @@ class mediumStorage:
         # Create / Open a file in write mode.
         # Write mode creates a new file.
         # If already file exists. Then, it overwrites the file.
-        f = open(fullDirectory,"w")
-
-        # Write the header of the file
-        for i in header:
-            try:
-                f.write(i)
-                f.write(",")
-                
-            except OSError:
-                print("Error when trying to write!!")
-        
-        # Write new line
-        try:
-            f.write("\r\n")
-        except OSError:
-            print("Error when trying to create new line!!")
-
-        # Write data to the csv file
-        for row in data:
-            for column in row:
-                # Write a row of data
+        with open(fullDirectory,"w") as f:
+            # Write the header of the file
+            for i in header:
                 try:
-                    f.write(str(column))
+                    f.write(i)
                     f.write(",")
                     
                 except OSError:
                     print("Error when trying to write!!")
             
-            # Write new line for next row of data
+            # Write new line
             try:
                 f.write("\r\n")
             except OSError:
                 print("Error when trying to create new line!!")
 
-        # # Write the contents of the file
-        # for i in data:
-        #     # Write a row of data
-        #     try:
-        #         f.write(str(i))
-        #         f.write(",")
+            # Write data to the csv file
+            for row in data:
+                for column in row:
+                    # Write a row of data
+                    try:
+                        f.write(str(column))
+                        f.write(",")
+                        
+                    except OSError:
+                        print("Error when trying to write!!")
                 
-        #     except OSError:
-        #         print("Error when trying to write!!")
-        
-        # # Write new line for next row of data
-        # try:
-        #     f.write("\r\n")
-        # except OSError:
-        #     print("Error when trying to create new line!!")
+                # Write new line for next row of data
+                try:
+                    f.write("\r\n")
+                except OSError:
+                    print("Error when trying to create new line!!")
 
         print("Finished writing to sdCard!!")
-
-        # Close the file
-        f.close()
 
 
 

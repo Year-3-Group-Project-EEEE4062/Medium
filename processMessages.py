@@ -37,7 +37,8 @@ class processMssg:
             return "T"
 
         elif mode_identifier == bleTest_identifier:
-            return "BRT"
+            instruction = self.__decodeData(mssg)
+            return "BRT", instruction
             
         else:
             # Invalid mode
@@ -45,29 +46,31 @@ class processMssg:
 
     def __decodeData(self, mssg):
         # data type identifier
-        integer_identifier = const(0x01)
-        double_identifier = const(0x02)
+        integer_identifier = 0x01
+        float_identifier = 0x02
 
         # Essentials for decoding message
         mssgStartingIndex = 6
         intBufferSize = 4
-        doubleBufferSize = 8
-
+        floatBufferSize = 4
+        
+        # Pick out where the data type identifier is stored in the message
         dataType_identifier = mssg[1]
         
         # Get the length of the information
         dataLength = struct.unpack('i', mssg[2:mssgStartingIndex])[0]
 
-        if dataType_identifier == double_identifier:
-            double_value = struct.unpack('d'* dataLength, mssg[mssgStartingIndex:mssgStartingIndex+(doubleBufferSize*dataLength)])
-            print(double_value)
-            return double_value
+        # Decode data based on the stored data type identifier
+        if dataType_identifier == float_identifier:
+            float_value = struct.unpack('f'* dataLength, mssg[mssgStartingIndex:mssgStartingIndex+(floatBufferSize*dataLength)])
+            float_value = [round(num,6) for num in float_value]
+            print(float_value)
+            return float_value # return decoded message
 
         elif dataType_identifier == integer_identifier:
-            print(len( mssg[mssgStartingIndex:mssgStartingIndex+(intBufferSize*dataLength)]))
             integer_value = struct.unpack('i'* dataLength, mssg[mssgStartingIndex:mssgStartingIndex+(intBufferSize*dataLength)])
             print(integer_value)
-            return integer_value
+            return integer_value # return decoded message
 
         else:
             raise ValueError("Unknown identifier")
