@@ -3,7 +3,7 @@ from lib.OLED import ssd1306
 import utime
 
 #defining a class for OLED display
-class oledDisplay:
+class mediumDisplay:
     #constructor
     def __init__(self):
         #Combination of I2C pins used for OLED
@@ -40,6 +40,27 @@ class oledDisplay:
     def microSDProblemMssg(self):
         self.oled.fill(0)
         self.oled.text("MicroSD Failed!", 0, 10)
+        self.oled.text("OFF Medium, ", 0, 30)
+        self.oled.text("Then ON Medium", 0, 50)
+        self.oled.show()
+
+    def displayProblemMssg(self):
+        self.oled.fill(0)
+        self.oled.text("OLED Failed!", 0, 10)
+        self.oled.text("OFF Medium, ", 0, 30)
+        self.oled.text("Then ON Medium", 0, 50)
+        self.oled.show()
+
+    def loraProblemMssg(self):
+        self.oled.fill(0)
+        self.oled.text("LoRa Failed!", 0, 10)
+        self.oled.text("OFF Medium, ", 0, 30)
+        self.oled.text("Then ON Medium", 0, 50)
+        self.oled.show()
+
+    def bleProblemMssg(self):
+        self.oled.fill(0)
+        self.oled.text("BLE Failed!", 0, 10)
         self.oled.text("OFF Medium, ", 0, 30)
         self.oled.text("Then ON Medium", 0, 50)
         self.oled.show()

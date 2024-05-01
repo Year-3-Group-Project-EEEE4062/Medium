@@ -19,8 +19,7 @@ class LoRa_TX:
 
         # initialise radio
         self.lora = LoRa(RFM95_SPIBUS, RFM95_INT, self.CLIENT_ADDRESS, RFM95_CS,
-                     reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, 
-                     acks=False)
+                     reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW)
 
     def loraTX(self, data):
         self.lora.send_to_wait(data, self.SERVER_ADDRESS)
@@ -42,8 +41,7 @@ class LoRa_RX:
 
         # initialise radio
         self.lora = LoRa(RFM95_SPIBUS, RFM95_INT, self.SERVER_ADDRESS, RFM95_CS, 
-                        reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW, 
-                        acks=False)
+                        reset_pin=RFM95_RST, freq=RF95_FREQ, tx_power=RF95_POW)
 
     def loraRX(self, rx_cb):
         # set callback (overwriting exisiting callback)
@@ -55,7 +53,7 @@ class LoRa_RX:
 class mediumLoRa:
     def __init__(self, bleSendCallback):
         # Timeout to get ack message from boat
-        self.pingTimeout = 0.4
+        self.pingTimeout = 2
 
         # To know if a send is acknowledged or not
         self.boatPinged = False
@@ -75,14 +73,28 @@ class mediumLoRa:
 
     # LoRa interrupt receiver callback function
     def rx_cb(self, payload):
-        if(payload.message==b'!'):
-            self.boatPinged = True
-
-        # Later have to add elif statement for storage messages
-
-        else:
-            # Temporary as not all other data received will notify app
+        print('huh')
+        self.boatPinged = True
+        if not(payload.message==b'!'):
             self.ble_cb(payload.message)
+
+    # # LoRa sender and wait for acknowledgement
+    # def sendForAck(self):
+    #     # Indicate it has been transferred
+    #     self.flag = False
+        
+    #     # Send data through LoRa
+    #     self.mediumLoRa_TX.loraTX(self.mssgForSent)
+        
+    #     start = time.time()
+    #     while time.time() - start < self.pingTimeout:
+    #         if self.boatPinged:
+    #             # Reset ack bool variable
+    #             self.boatPinged = False
+    #             return 'Y'
+        
+    #     self.boatPinged = False
+    #     return 'N'
 
     # LoRa sender and wait for acknowledgement
     def sendForAck(self):
@@ -93,15 +105,14 @@ class mediumLoRa:
         # if no respond, boat no within range
         for i in range(1,3):
             # Send data through LoRa
-            self.mediumLoRa_TX.loraTX('!'.encode())
+            self.mediumLoRa_TX.loraTX(self.mssgForSent)
             
             start = time.time()
             while time.time() - start < self.pingTimeout:
                 if self.boatPinged:
                     # Reset ack bool variable
                     self.boatPinged = False
-                    self.mediumLoRa_TX.loraTX(self.mssgForSent)
-                    return 'Y' 
+                    return 'Y'
         
         self.boatPinged = False
         return 'N'
