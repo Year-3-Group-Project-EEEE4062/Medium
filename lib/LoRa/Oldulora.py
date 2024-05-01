@@ -241,10 +241,13 @@ class LoRa(object):
 
         if type(data) == int:
             data = [data]
+            bytearrayOrNot = 0
         elif type(data) == bytes:
             data = [p for p in data]
+            bytearrayOrNot = 0
         elif type(data) == str:
             data = [ord(s) for s in data]
+            bytearrayOrNot = 0
         elif type(data) == bytearray:
             data = list(data)
             bytearrayOrNot = 1
@@ -268,7 +271,7 @@ class LoRa(object):
         self.send(data, header_to, header_id=self._last_header_id, header_flags=header_flags)
 
     def send_ack(self, header_to, header_id):
-        self.send(b'!', header_to, header_id, FLAGS_ACK)
+        self.send(b'?', header_to, header_id, FLAGS_ACK)
         self.wait_packet_sent()
 
     def _spi_write(self, register, payload):
@@ -278,6 +281,13 @@ class LoRa(object):
             payload = [p for p in payload]
         elif type(payload) == str:
             payload = [ord(s) for s in payload]
+
+        # User added code
+        elif type(payload) == bytearray:
+            payload = [payload]
+            print("Some: ",payload)
+        ##
+
         self.cs.value(0)
         self.spi.write(bytearray([register | 0x80] + payload))
         self.cs.value(1)

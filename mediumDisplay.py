@@ -1,5 +1,5 @@
 from machine import Pin, SoftI2C
-from lib.oled import ssd1306
+from lib.OLED import ssd1306
 import utime
 
 #defining a class for OLED display
