@@ -73,35 +73,31 @@ class mediumLoRa:
 
     # LoRa interrupt receiver callback function
     def rx_cb(self, payload):
-        if(payload.message==b'!'):
-            self.boatPinged = True
-
-        # Later have to add elif statement for storage messages
-
-        else:
-            # Temporary as not all other data received will notify app
+        print('huh')
+        self.boatPinged = True
+        if not(payload.message==b'!'):
             self.ble_cb(payload.message)
+
+    # # LoRa sender and wait for acknowledgement
+    # def sendForAck(self):
+    #     # Indicate it has been transferred
+    #     self.flag = False
+        
+    #     # Send data through LoRa
+    #     self.mediumLoRa_TX.loraTX(self.mssgForSent)
+        
+    #     start = time.time()
+    #     while time.time() - start < self.pingTimeout:
+    #         if self.boatPinged:
+    #             # Reset ack bool variable
+    #             self.boatPinged = False
+    #             return 'Y'
+        
+    #     self.boatPinged = False
+    #     return 'N'
 
     # LoRa sender and wait for acknowledgement
     def sendForAck(self):
-        # Indicate it has been transferred
-        self.flag = False
-        
-        # Send data through LoRa
-        self.mediumLoRa_TX.loraTX(self.mssgForSent)
-        
-        start = time.time()
-        while time.time() - start < self.pingTimeout:
-            if self.boatPinged:
-                # Reset ack bool variable
-                self.boatPinged = False
-                return 'Y'
-        
-        self.boatPinged = False
-        return 'N'
-
-    # LoRa sender and wait for acknowledgement
-    def OLDsendForAck(self):
         # Indicate it has been transferred
         self.flag = False
         

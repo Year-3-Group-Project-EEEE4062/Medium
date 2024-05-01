@@ -241,10 +241,13 @@ class LoRa(object):
 
         if type(data) == int:
             data = [data]
+            bytearrayOrNot = 0
         elif type(data) == bytes:
             data = [p for p in data]
+            bytearrayOrNot = 0
         elif type(data) == str:
             data = [ord(s) for s in data]
+            bytearrayOrNot = 0
         elif type(data) == bytearray:
             data = list(data)
             bytearrayOrNot = 1
@@ -350,7 +353,7 @@ class LoRa(object):
                 if self._acks and header_to == self._this_address and not header_flags & FLAGS_ACK:
                     self.send_ack(header_from, header_id)
 
-                # self.set_mode_rx()
+                self.set_mode_rx()
 
                 self._last_payload = namedtuple(
                     "Payload",
