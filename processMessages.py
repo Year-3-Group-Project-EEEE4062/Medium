@@ -10,7 +10,7 @@ class processMssg:
         remote_identifier = const(0x01)
         auto_identifier = const(0x02)
         time_identifier = const(0x03)
-        bleTest_identifier = const(0x04)
+        temperature_identifier = const(0x04)
         test_identifier = const(0x21)
         
         print("Processing message...")
@@ -35,10 +35,10 @@ class processMssg:
 
         elif mode_identifier == test_identifier:
             return "T"
+        
+        elif mode_identifier == temperature_identifier:
+            return "D"
 
-        elif mode_identifier == bleTest_identifier:
-            return "BRT"
-            
         else:
             # Invalid mode
             return "E"

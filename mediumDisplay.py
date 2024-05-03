@@ -65,6 +65,13 @@ class mediumDisplay:
         self.oled.text("Then ON Medium", 0, 50)
         self.oled.show()
 
+    def mainProblemMssg(self):
+        self.oled.fill(0)
+        self.oled.text("Program Error!", 0, 10)
+        self.oled.text("OFF Medium, ", 0, 30)
+        self.oled.text("Then ON Medium", 0, 50)
+        self.oled.show()
+
     def actionMssg(self, boatStatus, mode):
         self.oled.fill(0)
 

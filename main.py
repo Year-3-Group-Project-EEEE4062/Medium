@@ -103,10 +103,13 @@ try:
         # check if there is a message to be sent or not
         if LoRa.checkLoRaFlag():
             print("##################################################################")
-            pinged = LoRa.sendForAck()
-            mode = LoRa.getMode()
-            oledscreen.actionMssg(pinged, mode)
-
+            try:
+                pinged = LoRa.sendForAck()
+                mode = LoRa.getMode()
+                oledscreen.actionMssg(pinged, mode)
+            except:
+                oledscreen.mainProblemMssg()
+            
 except KeyboardInterrupt:
     pass
 
